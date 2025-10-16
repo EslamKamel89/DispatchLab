@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\SendWelcomeEmail;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -8,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
 Route::get('/', function () {
+    SendWelcomeEmail::dispatch();
     return view('welcome');
 })->name('home');
 
@@ -34,4 +36,4 @@ Route::middleware(['auth'])->group(function () {
         ->name('two-factor.show');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
