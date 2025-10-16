@@ -9,9 +9,18 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
 Route::get('/', function () {
-    SendWelcomeEmail::dispatch();
     return view('welcome');
 })->name('home');
+
+Route::get('/test', function () {
+    $max = 100;
+    foreach (range(0, $max) as $i) {
+        SendWelcomeEmail::dispatch();
+    }
+    return response()->json([
+        'message' => "{$max} SendWelcomeEmail jobs are dispatched to the queue"
+    ]);
+});
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
