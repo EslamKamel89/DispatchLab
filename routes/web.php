@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\ProcessPayment;
 use App\Jobs\SendWelcomeEmail;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
@@ -17,6 +18,7 @@ Route::get('/test', function () {
     foreach (range(0, $max) as $i) {
         SendWelcomeEmail::dispatch();
     }
+    ProcessPayment::dispatch()->onQueue('payment');
     return response()->json([
         'message' => "{$max} SendWelcomeEmail jobs are dispatched to the queue"
     ]);
