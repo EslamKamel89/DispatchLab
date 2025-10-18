@@ -6,6 +6,8 @@ use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -14,14 +16,18 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/test', function () {
-    $max = 0;
-    foreach (range(0, $max) as $i) {
-        SendWelcomeEmail::dispatch();
-    }
-    ProcessPayment::dispatch()->onQueue('payment');
-    return response()->json([
-        'message' => "{$max} SendWelcomeEmail jobs are dispatched to the queue"
-    ]);
+    $batch = [
+        new SendWelcomeEmail(),
+        new ProcessPayment(),
+    ];
+    Bus::batch($batch)
+        ->allowFailures()
+        ->catch(function (\Throwable $e) {
+        })
+        ->dispatch();
+    return [
+        'message' => 'success',
+    ];
 });
 
 Route::view('dashboard', 'dashboard')

@@ -2,26 +2,23 @@
 
 namespace App\Jobs;
 
+use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-class ProcessPayment implements ShouldQueue
-{
-    use Queueable;
+class ProcessPayment implements ShouldQueue {
+    use Queueable, Batchable;
 
-    /**
-     * Create a new job instance.
-     */
-    public function __construct()
-    {
+
+    public function __construct() {
         //
     }
 
-    /**
-     * Execute the job.
-     */
-    public function handle(): void
-    {
-        //
+
+    public function handle(): void {
+        if ($this->batch()->canceled()) {
+            return;
+        }
+        info('Process Payment');
     }
 }
