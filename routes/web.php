@@ -14,7 +14,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/test', function () {
-    $max = 100;
+    $max = 0;
     foreach (range(0, $max) as $i) {
         SendWelcomeEmail::dispatch();
     }
