@@ -22,7 +22,14 @@ Route::get('/test', function () {
     ];
     Bus::batch($batch)
         ->allowFailures()
-        ->catch(function (\Throwable $e) {
+        ->onQueue('deployment')
+        ->onConnection('database')
+        ->catch(function (Batch $batch, \Throwable $e) {
+        })
+        ->finally(function () {
+        })
+        ->then(function (Batch $batch) {
+            info(dump($batch));
         })
         ->dispatch();
     return [
