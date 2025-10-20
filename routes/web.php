@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\Deploy;
 use App\Jobs\ProcessPayment;
 use App\Jobs\SendWelcomeEmail;
 use App\Livewire\Settings\Appearance;
@@ -16,22 +17,9 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/test', function () {
-    $batch = [
-        new SendWelcomeEmail(),
-        new ProcessPayment(),
-    ];
-    Bus::batch($batch)
-        ->allowFailures()
-        ->onQueue('deployment')
-        ->onConnection('database')
-        ->catch(function (Batch $batch, \Throwable $e) {
-        })
-        ->finally(function () {
-        })
-        ->then(function (Batch $batch) {
-            info(dump($batch));
-        })
-        ->dispatch();
+    foreach (range(0, 10) as $i) {
+        Deploy::dispatch("Project $i");
+    }
     return [
         'message' => 'success',
     ];
